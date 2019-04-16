@@ -56,10 +56,26 @@ def advance_time(time_string, minutes_to_adv_str):
     # Split the time into hour, minutes, and AM/PM, splitting at : and " "
     orig_hr_str,orig_min_str,ampm = re.split("[: ]", time_string)
 
-    # Convert string time to int
+    # Verify values are convertable to integerss
+    for val in [orig_hr_str, orig_min_str, minutes_to_adv_str]:
+        try:
+            int_test = int(val)
+        except ValueError:
+            print "Value " + val + " must be an integer."
+            sys.exit(1)
+            
+    # Actually convert them
     orig_hr = int(orig_hr_str)
     orig_min = int(orig_min_str)
     minutes_to_adv = int(minutes_to_adv_str)
+
+    # Verify hours are not in military/24hr format, and is greater than 01
+    if (orig_hr > 12) or (orig_hr <= 0):
+        print "Time format is not correct. Please use 12-hour (1 - 12) format, not military time."
+        sys.exit(1)
+    elif (orig_min < 0) or (orig_min >= 60):
+        print "Minute value must be between 0 and 59."
+        sys.exit(1)
 
     # Convert minutes into hour and minutes
     hr_to_change,min_to_change = divmod(abs(minutes_to_adv), 60)
